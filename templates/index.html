@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <title>🌍 Enhets- og valutakonverterer</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            background-color: #f9fafb;
+            color: #222;
+            margin: 0;
+            padding: 2rem;
+            max-width: 700px;
+            margin-inline: auto;
+        }
+        h1 {
+            text-align: center;
+            color: #0d6efd;
+        }
+        form {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        label {
+            display: block;
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+        select, input {
+            width: 100%;
+            padding: .5rem;
+            margin-top: .3rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+        button {
+            display: block;
+            width: 100%;
+            margin-top: 1.5rem;
+            background: #0d6efd;
+            color: white;
+            border: none;
+            padding: .7rem;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0b5ed7;
+        }
+        .result {
+            margin-top: 2rem;
+            background: #e9f5ff;
+            border-left: 4px solid #0d6efd;
+            padding: 1rem;
+            border-radius: 6px;
+            font-size: 1.1rem;
+        }
+        .error {
+            background: #ffe9e9;
+            border-left-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌍 Enhets- og valutakonverterer</h1>
+
+    <form method="post">
+        <!-- Kategori -->
+        <label for="category">Kategori:</label>
+        <select name="category" id="category" onchange="updateUnits()" data-units='{{ units | tojson }}'>
+            {% for cat in units %}
+                <option value="{{ cat }}" {% if cat == selected_category %}selected{% endif %}>{{ cat }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Fra -->
+        <label for="from_unit">Fra:</label>
+        <select name="from_unit" id="from_unit">
+            {% for u in units[selected_category] %}
+                <option value="{{ u }}" {% if u == from_unit %}selected{% endif %}>{{ u }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Til -->
+        <label for="to_unit">Til:</label>
+        <select name="to_unit" id="to_unit">
+            {% for u in units[selected_category] %}
+                <option value="{{ u }}" {% if u == to_unit %}selected{% endif %}>{{ u }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Verdi -->
+        <label for="value">Verdi:</label>
+        <input type="number" step="any" name="value" id="value" value="{{ value }}" required>
+
+        <button type="submit">Konverter</button>
+    </form>
+
+    {% if result %}
+        <div class="result {% if '⚠️' in result %}error{% endif %}">
+            <strong>Resultat:</strong> {{ result }}
+        </div>
+    {% endif %}
+
+    <script>
+        const categorySelect = document.getElementById("category");
+        const units = JSON.parse(categorySelect.dataset.units);
+
+        function updateUnits() {
+            const category = categorySelect.value;
+            const fromSelect = document.getElementById("from_unit");
+            const toSelect = document.getElementById("to_unit");
+
+            const prevFrom = fromSelect.value;
+            const prevTo = toSelect.value;
+
+            fromSelect.innerHTML = "";
+            toSelect.innerHTML = "";
+
+            units[category].forEach(u => {
+                const opt1 = document.createElement("option");
+                opt1.value = u;
+                opt1.text = u;
+                if (u === prevFrom) opt1.selected = true;
+                fromSelect.add(opt1);
+
+                const opt2 = document.createElement("option");
+                opt2.value = u;
+                opt2.text = u;
+                if (u === prevTo) opt2.selected = true;
+                toSelect.add(opt2);
+            });
+        }
+    </script>
+</body>
+</html>
+
