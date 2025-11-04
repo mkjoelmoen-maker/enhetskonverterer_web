@@ -47,22 +47,36 @@
             min-height: 100vh;
             padding: 1rem;
         }
-        .container {
+        .app-wrapper {
             width: 100%;
             max-width: 420px;
             background: var(--card-bg);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            padding: 2rem;
+            overflow: hidden;
             animation: fadeIn 0.5s ease;
         }
-        h1 {
-            text-align: center;
-            margin-bottom: 1.8rem;
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 700;
+            padding: 1rem;
+            color: white;
+            font-weight: 600;
+            font-size: 1.3rem;
+            letter-spacing: 0.3px;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        }
+        header img {
+            width: 28px;
+            height: 28px;
+            margin-right: 10px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .container {
+            padding: 2rem;
         }
         label {
             font-weight: 600;
@@ -114,53 +128,65 @@
             text-align: center;
             font-size: 1.1rem;
             font-weight: 500;
+            animation: slideUp 0.4s ease;
         }
         .error {
             background: rgba(255,0,0,0.08);
             border-left-color: #dc3545;
         }
+
         @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideUp {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌍 Enhetskonverterer</h1>
-        <form method="post">
-            <label for="category">Kategori:</label>
-            <select name="category" id="category" onchange="updateUnits()" data-units='{{ units | tojson }}'>
-                {% for cat in units %}
-                    <option value="{{ cat }}" {% if cat == selected_category %}selected{% endif %}>{{ cat }}</option>
-                {% endfor %}
-            </select>
+    <div class="app-wrapper">
+        <header>
+            <img src="{{ url_for('static', filename='icon.png') }}" alt="ikon">
+            Enhetskonverterer
+        </header>
 
-            <label for="from_unit">Fra:</label>
-            <select name="from_unit" id="from_unit">
-                {% for u in units[selected_category] %}
-                    <option value="{{ u }}" {% if u == from_unit %}selected{% endif %}>{{ u }}</option>
-                {% endfor %}
-            </select>
+        <div class="container">
+            <form method="post">
+                <label for="category">Kategori:</label>
+                <select name="category" id="category" onchange="updateUnits()" data-units='{{ units | tojson }}'>
+                    {% for cat in units %}
+                        <option value="{{ cat }}" {% if cat == selected_category %}selected{% endif %}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
 
-            <label for="to_unit">Til:</label>
-            <select name="to_unit" id="to_unit">
-                {% for u in units[selected_category] %}
-                    <option value="{{ u }}" {% if u == to_unit %}selected{% endif %}>{{ u }}</option>
-                {% endfor %}
-            </select>
+                <label for="from_unit">Fra:</label>
+                <select name="from_unit" id="from_unit">
+                    {% for u in units[selected_category] %}
+                        <option value="{{ u }}" {% if u == from_unit %}selected{% endif %}>{{ u }}</option>
+                    {% endfor %}
+                </select>
 
-            <label for="value">Verdi:</label>
-            <input type="number" step="any" name="value" id="value" value="{{ value }}" required>
+                <label for="to_unit">Til:</label>
+                <select name="to_unit" id="to_unit">
+                    {% for u in units[selected_category] %}
+                        <option value="{{ u }}" {% if u == to_unit %}selected{% endif %}>{{ u }}</option>
+                    {% endfor %}
+                </select>
 
-            <button type="submit">Konverter</button>
-        </form>
+                <label for="value">Verdi:</label>
+                <input type="number" step="any" name="value" id="value" value="{{ value }}" required>
 
-        {% if result %}
-            <div class="result {% if '⚠️' in result %}error{% endif %}">
-                <strong>Resultat:</strong> {{ result }}
-            </div>
-        {% endif %}
+                <button type="submit">Konverter</button>
+            </form>
+
+            {% if result %}
+                <div class="result {% if '⚠️' in result %}error{% endif %}">
+                    <strong>Resultat:</strong> {{ result }}
+                </div>
+            {% endif %}
+        </div>
     </div>
 
     <script>
