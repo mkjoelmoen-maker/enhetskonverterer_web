@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🌍 Enhetskonverterer</title>
 
-    <!-- Ikoner for mobil -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='icon.png') }}">
     <link rel="apple-touch-icon" href="{{ url_for('static', filename='icon.png') }}">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -18,35 +17,42 @@
             --gradient: linear-gradient(135deg, #007aff, #00c6ff);
             --bg: #f2f4f7;
             --card-bg: #ffffff;
+            --text-color: #111;
             --radius: 18px;
             --shadow: 0 8px 20px rgba(0,0,0,0.08);
+            --transition-speed: 0.5s;
         }
+
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg: #0d1117;
                 --card-bg: #161b22;
                 --primary: #2997ff;
                 --gradient: linear-gradient(135deg, #0a84ff, #30c8ff);
+                --text-color: #f5f5f7;
                 --shadow: 0 4px 14px rgba(0,0,0,0.4);
-            }
-            body, input, select, button {
-                color-scheme: dark;
             }
         }
 
         * {
             box-sizing: border-box;
             font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+            transition: background-color var(--transition-speed) ease,
+                        color var(--transition-speed) ease,
+                        border-color var(--transition-speed) ease;
         }
+
         body {
             margin: 0;
             background: var(--bg);
+            color: var(--text-color);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 1rem;
         }
+
         .app-wrapper {
             width: 100%;
             max-width: 420px;
@@ -56,6 +62,7 @@
             overflow: hidden;
             animation: fadeIn 0.5s ease;
         }
+
         header {
             display: flex;
             align-items: center;
@@ -68,22 +75,23 @@
             letter-spacing: 0.3px;
             text-shadow: 0 1px 4px rgba(0,0,0,0.2);
         }
-        header img {
-            width: 28px;
-            height: 28px;
-            margin-right: 10px;
-            border-radius: 6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+
+        #category-icon {
+            margin-right: 8px;
+            font-size: 1.5rem;
         }
+
         .container {
             padding: 2rem;
         }
+
         label {
             font-weight: 600;
             display: block;
             margin-top: 1rem;
-            color: #555;
+            color: var(--text-color);
         }
+
         select, input {
             width: 100%;
             padding: .8rem;
@@ -92,12 +100,16 @@
             border: 1px solid #ccc;
             font-size: 1rem;
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            background: var(--card-bg);
+            color: var(--text-color);
         }
+
         select:focus, input:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(0,122,255,0.2);
         }
+
         button {
             width: 100%;
             margin-top: 1.8rem;
@@ -111,14 +123,17 @@
             cursor: pointer;
             transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
+
         button:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 14px rgba(0,122,255,0.3);
         }
+
         button:active {
             transform: translateY(0);
             box-shadow: 0 3px 6px rgba(0,122,255,0.2);
         }
+
         .result {
             margin-top: 2rem;
             background: rgba(0,122,255,0.08);
@@ -130,6 +145,7 @@
             font-weight: 500;
             animation: slideUp 0.4s ease;
         }
+
         .error {
             background: rgba(255,0,0,0.08);
             border-left-color: #dc3545;
@@ -139,6 +155,7 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -148,7 +165,7 @@
 <body>
     <div class="app-wrapper">
         <header>
-            <img src="{{ url_for('static', filename='icon.png') }}" alt="ikon">
+            <span id="category-icon">🌍</span>
             Enhetskonverterer
         </header>
 
@@ -157,7 +174,9 @@
                 <label for="category">Kategori:</label>
                 <select name="category" id="category" onchange="updateUnits()" data-units='{{ units | tojson }}'>
                     {% for cat in units %}
-                        <option value="{{ cat }}" {% if cat == selected_category %}selected{% endif %}>{{ cat }}</option>
+                        <option value="{{ cat }}" {% if cat == selected_category %}selected{% endif %}>
+                            {{ cat }}
+                        </option>
                     {% endfor %}
                 </select>
 
@@ -192,11 +211,22 @@
     <script>
         const categorySelect = document.getElementById("category");
         const units = JSON.parse(categorySelect.dataset.units);
+        const categoryIcon = document.getElementById("category-icon");
+
+        const categoryIcons = {
+            "Lengde": "📏",
+            "Vekt": "⚖️",
+            "Volum": "🧴",
+            "Tid": "⏰",
+            "Temperatur": "🌡️",
+            "Valuta": "💰"
+        };
 
         function updateUnits() {
             const category = categorySelect.value;
             const fromSelect = document.getElementById("from_unit");
             const toSelect = document.getElementById("to_unit");
+            categoryIcon.textContent = categoryIcons[category] || "🌍";
 
             const prevFrom = fromSelect.value;
             const prevTo = toSelect.value;
@@ -218,6 +248,9 @@
                 toSelect.add(opt2);
             });
         }
+
+        // Oppdater ikon og tema ved lasting
+        updateUnits();
     </script>
 </body>
 </html>
