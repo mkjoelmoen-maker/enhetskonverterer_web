@@ -1,42 +1,55 @@
 <!DOCTYPE html>
 <html lang="no">
 <head>
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icon.png') }}">
-<!-- iPhone & iPad ikon -->
-<link rel="apple-touch-icon" href="{{ url_for('static', filename='icon.png') }}">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Enhetskonverterer">
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌍 Enhets- og valutakonverterer</title>
+    <title>🌍 Enhetskonverterer</title>
+
+    <!-- Ikoner for mobil -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='icon.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icon.png') }}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Enhetskonverterer">
+
     <style>
         :root {
-            --primary: #0d6efd;
-            --bg: #f4f6f8;
-            --card-bg: #fff;
-            --radius: 14px;
-            --shadow: 0 4px 14px rgba(0,0,0,0.08);
+            --primary: #007aff;
+            --gradient: linear-gradient(135deg, #007aff, #00c6ff);
+            --bg: #f2f4f7;
+            --card-bg: #ffffff;
+            --radius: 18px;
+            --shadow: 0 8px 20px rgba(0,0,0,0.08);
         }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0d1117;
+                --card-bg: #161b22;
+                --primary: #2997ff;
+                --gradient: linear-gradient(135deg, #0a84ff, #30c8ff);
+                --shadow: 0 4px 14px rgba(0,0,0,0.4);
+            }
+            body, input, select, button {
+                color-scheme: dark;
+            }
+        }
+
         * {
             box-sizing: border-box;
-            font-family: "Inter", system-ui, sans-serif;
+            font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
         }
         body {
-            background: var(--bg);
-            color: #222;
             margin: 0;
-            padding: 1rem;
+            background: var(--bg);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            padding: 1rem;
         }
         .container {
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             background: var(--card-bg);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
@@ -45,52 +58,69 @@
         }
         h1 {
             text-align: center;
-            color: var(--primary);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.8rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
         }
         label {
             font-weight: 600;
             display: block;
             margin-top: 1rem;
+            color: #555;
         }
         select, input {
             width: 100%;
-            padding: .7rem;
-            margin-top: .3rem;
-            border-radius: 8px;
+            padding: .8rem;
+            margin-top: .4rem;
+            border-radius: 10px;
             border: 1px solid #ccc;
             font-size: 1rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,122,255,0.2);
         }
         button {
             width: 100%;
-            margin-top: 1.5rem;
-            background: var(--primary);
+            margin-top: 1.8rem;
+            background: var(--gradient);
             color: white;
             border: none;
-            padding: .8rem;
-            border-radius: 10px;
+            padding: .9rem;
+            border-radius: 12px;
             font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s ease;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
         button:hover {
-            background: #0b5ed7;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0,122,255,0.3);
+        }
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 6px rgba(0,122,255,0.2);
         }
         .result {
             margin-top: 2rem;
-            background: #e9f5ff;
+            background: rgba(0,122,255,0.08);
             border-left: 4px solid var(--primary);
             padding: 1rem;
-            border-radius: 8px;
+            border-radius: 10px;
             text-align: center;
             font-size: 1.1rem;
+            font-weight: 500;
         }
         .error {
-            background: #ffe9e9;
+            background: rgba(255,0,0,0.08);
             border-left-color: #dc3545;
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
@@ -165,4 +195,3 @@
     </script>
 </body>
 </html>
-
