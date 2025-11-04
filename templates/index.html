@@ -3,230 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌍 Enhetskonverterer</title>
-
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icon.png') }}">
-    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icon.png') }}">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Enhetskonverterer">
-
+    <title>🌍 Enhets- og valutakonverterer</title>
     <style>
         :root {
-            --primary: #007aff;
-            --gradient: linear-gradient(135deg, #007aff, #00c6ff);
-            --bg: #f2f4f7;
+            --bg: #f9fafb;
+            --text: #222;
             --card-bg: #ffffff;
-            --text-color: #111;
-            --radius: 18px;
-            --shadow: 0 8px 20px rgba(0,0,0,0.08);
-            --transition-speed: 0.5s;
+            --primary: #0d6efd;
+            --primary-dark: #0b5ed7;
+            --accent: #e9f5ff;
         }
 
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg: #0d1117;
-                --card-bg: #161b22;
-                --primary: #2997ff;
-                --gradient: linear-gradient(135deg, #0a84ff, #30c8ff);
-                --text-color: #f5f5f7;
-                --shadow: 0 4px 14px rgba(0,0,0,0.4);
-            }
-        }
-
-        * {
-            box-sizing: border-box;
-            font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
-            transition: background-color var(--transition-speed) ease,
-                        color var(--transition-speed) ease,
-                        border-color var(--transition-speed) ease;
+        body.dark-mode {
+            --bg: #121212;
+            --text: #f0f0f0;
+            --card-bg: #1e1e1e;
+            --primary: #4da3ff;
+            --primary-dark: #1c74d4;
+            --accent: #1b2735;
         }
 
         body {
+            font-family: system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
             margin: 0;
-            background: var(--bg);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 1rem;
-        }
-
-        .app-wrapper {
-            width: 100%;
-            max-width: 420px;
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            animation: fadeIn 0.5s ease;
-        }
-
-        header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--gradient);
-            padding: 1rem;
-            color: white;
-            font-weight: 600;
-            font-size: 1.3rem;
-            letter-spacing: 0.3px;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.2);
-        }
-
-        #category-icon {
-            margin-right: 8px;
-            font-size: 1.5rem;
-        }
-
-        .container {
             padding: 2rem;
+            max-width: 700px;
+            margin-inline: auto;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Tema-bryter */
+        .theme-toggle {
+            text-align: right;
+            margin-bottom: 1.5rem;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            vertical-align: middle;
+        }
+
+        .switch input {
+            display: none;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        form {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: background 0.3s;
         }
 
         label {
-            font-weight: 600;
             display: block;
             margin-top: 1rem;
-            color: var(--text-color);
+            font-weight: 600;
         }
 
         select, input {
             width: 100%;
-            padding: .8rem;
-            margin-top: .4rem;
-            border-radius: 10px;
+            padding: .5rem;
+            margin-top: .3rem;
+            border-radius: 6px;
             border: 1px solid #ccc;
             font-size: 1rem;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-            background: var(--card-bg);
-            color: var(--text-color);
-        }
-
-        select:focus, input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0,122,255,0.2);
+            background: var(--bg);
+            color: var(--text);
         }
 
         button {
+            display: block;
             width: 100%;
-            margin-top: 1.8rem;
-            background: var(--gradient);
+            margin-top: 1.5rem;
+            background: var(--primary);
             color: white;
             border: none;
-            padding: .9rem;
-            border-radius: 12px;
+            padding: .7rem;
+            border-radius: 6px;
             font-size: 1.1rem;
-            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            transition: background 0.3s;
         }
 
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 14px rgba(0,122,255,0.3);
-        }
-
-        button:active {
-            transform: translateY(0);
-            box-shadow: 0 3px 6px rgba(0,122,255,0.2);
+            background: var(--primary-dark);
         }
 
         .result {
             margin-top: 2rem;
-            background: rgba(0,122,255,0.08);
+            background: var(--accent);
             border-left: 4px solid var(--primary);
             padding: 1rem;
-            border-radius: 10px;
-            text-align: center;
+            border-radius: 6px;
             font-size: 1.1rem;
-            font-weight: 500;
-            animation: slideUp 0.4s ease;
         }
 
         .error {
-            background: rgba(255,0,0,0.08);
+            background: #ffe9e9;
             border-left-color: #dc3545;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-    <div class="app-wrapper">
-        <header>
-            <span id="category-icon">🌍</span>
-            Enhetskonverterer
-        </header>
+    <h1>🌍 Enhets- og valutakonverterer</h1>
 
-        <div class="container">
-            <form method="post">
-                <label for="category">Kategori:</label>
-                <select name="category" id="category" onchange="updateUnits()" data-units='{{ units | tojson }}'>
-                    {% for cat in units %}
-                        <option value="{{ cat }}" {% if cat == selected_category %}selected{% endif %}>
-                            {{ cat }}
-                        </option>
-                    {% endfor %}
-                </select>
-
-                <label for="from_unit">Fra:</label>
-                <select name="from_unit" id="from_unit">
-                    {% for u in units[selected_category] %}
-                        <option value="{{ u }}" {% if u == from_unit %}selected{% endif %}>{{ u }}</option>
-                    {% endfor %}
-                </select>
-
-                <label for="to_unit">Til:</label>
-                <select name="to_unit" id="to_unit">
-                    {% for u in units[selected_category] %}
-                        <option value="{{ u }}" {% if u == to_unit %}selected{% endif %}>{{ u }}</option>
-                    {% endfor %}
-                </select>
-
-                <label for="value">Verdi:</label>
-                <input type="number" step="any" name="value" id="value" value="{{ value }}" required>
-
-                <button type="submit">Konverter</button>
-            </form>
-
-            {% if result %}
-                <div class="result {% if '⚠️' in result %}error{% endif %}">
-                    <strong>Resultat:</strong> {{ result }}
-                </div>
-            {% endif %}
-        </div>
+    <div class="theme-toggle">
+        🌞 / 🌙 
+        <label class="switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider"></span>
+        </label>
     </div>
 
+    <form method="post">
+        <!-- Kategori -->
+        <label for="category">Kategori:</label>
+        <select name="category" id="category" onchange="updateUnits()" data-units='{{ units | tojson }}'>
+            {% for cat in units %}
+                <option value="{{ cat }}" {% if cat == selected_category %}selected{% endif %}>{{ cat }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Fra -->
+        <label for="from_unit">Fra:</label>
+        <select name="from_unit" id="from_unit">
+            {% for u in units[selected_category] %}
+                <option value="{{ u }}" {% if u == from_unit %}selected{% endif %}>{{ u }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Til -->
+        <label for="to_unit">Til:</label>
+        <select name="to_unit" id="to_unit">
+            {% for u in units[selected_category] %}
+                <option value="{{ u }}" {% if u == to_unit %}selected{% endif %}>{{ u }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Verdi -->
+        <label for="value">Verdi:</label>
+        <input type="number" step="any" name="value" id="value" value="{{ value }}" required>
+
+        <button type="submit">Konverter</button>
+    </form>
+
+    {% if result %}
+        <div class="result {% if '⚠️' in result %}error{% endif %}">
+            <strong>Resultat:</strong> {{ result }}
+        </div>
+    {% endif %}
+
     <script>
+        // Dynamisk enhetsoppdatering
         const categorySelect = document.getElementById("category");
         const units = JSON.parse(categorySelect.dataset.units);
-        const categoryIcon = document.getElementById("category-icon");
-
-        const categoryIcons = {
-            "Lengde": "📏",
-            "Vekt": "⚖️",
-            "Volum": "🧴",
-            "Tid": "⏰",
-            "Temperatur": "🌡️",
-            "Valuta": "💰"
-        };
 
         function updateUnits() {
             const category = categorySelect.value;
             const fromSelect = document.getElementById("from_unit");
             const toSelect = document.getElementById("to_unit");
-            categoryIcon.textContent = categoryIcons[category] || "🌍";
 
             const prevFrom = fromSelect.value;
             const prevTo = toSelect.value;
@@ -249,10 +225,26 @@
             });
         }
 
-        // Oppdater ikon og tema ved lasting
-        updateUnits();
-categoryIcon.textContent = categoryIcons["{{ selected_category }}"] || "🌍";
+        // 🌙 Tema-bryter med lagring
+        const toggle = document.getElementById('theme-toggle');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const currentTheme = localStorage.getItem('theme');
 
+        if (currentTheme === 'dark' || (!currentTheme && prefersDark)) {
+            document.body.classList.add('dark-mode');
+            toggle.checked = true;
+        }
+
+        toggle.addEventListener('change', () => {
+            if (toggle.checked) {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        });
     </script>
 </body>
 </html>
+
