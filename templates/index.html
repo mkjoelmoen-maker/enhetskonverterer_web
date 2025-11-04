@@ -2,51 +2,69 @@
 <html lang="no">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🌍 Enhets- og valutakonverterer</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icon.png') }}">
     <style>
+        :root {
+            --primary: #0d6efd;
+            --bg: #f4f6f8;
+            --card-bg: #fff;
+            --radius: 14px;
+            --shadow: 0 4px 14px rgba(0,0,0,0.08);
+        }
+        * {
+            box-sizing: border-box;
+            font-family: "Inter", system-ui, sans-serif;
+        }
         body {
-            font-family: system-ui, sans-serif;
-            background-color: #f9fafb;
+            background: var(--bg);
             color: #222;
             margin: 0;
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
             padding: 2rem;
-            max-width: 700px;
-            margin-inline: auto;
+            animation: fadeIn 0.5s ease;
         }
         h1 {
             text-align: center;
-            color: #0d6efd;
-        }
-        form {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            color: var(--primary);
+            margin-bottom: 1.5rem;
         }
         label {
+            font-weight: 600;
             display: block;
             margin-top: 1rem;
-            font-weight: 600;
         }
         select, input {
             width: 100%;
-            padding: .5rem;
+            padding: .7rem;
             margin-top: .3rem;
-            border-radius: 6px;
+            border-radius: 8px;
             border: 1px solid #ccc;
             font-size: 1rem;
         }
         button {
-            display: block;
             width: 100%;
             margin-top: 1.5rem;
-            background: #0d6efd;
+            background: var(--primary);
             color: white;
             border: none;
-            padding: .7rem;
-            border-radius: 6px;
+            padding: .8rem;
+            border-radius: 10px;
             font-size: 1.1rem;
             cursor: pointer;
+            transition: background 0.2s ease;
         }
         button:hover {
             background: #0b5ed7;
@@ -54,57 +72,59 @@
         .result {
             margin-top: 2rem;
             background: #e9f5ff;
-            border-left: 4px solid #0d6efd;
+            border-left: 4px solid var(--primary);
             padding: 1rem;
-            border-radius: 6px;
+            border-radius: 8px;
+            text-align: center;
             font-size: 1.1rem;
         }
         .error {
             background: #ffe9e9;
             border-left-color: #dc3545;
         }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
-    <h1>🌍 Enhets- og valutakonverterer</h1>
+    <div class="container">
+        <h1>🌍 Enhetskonverterer</h1>
+        <form method="post">
+            <label for="category">Kategori:</label>
+            <select name="category" id="category" onchange="updateUnits()" data-units='{{ units | tojson }}'>
+                {% for cat in units %}
+                    <option value="{{ cat }}" {% if cat == selected_category %}selected{% endif %}>{{ cat }}</option>
+                {% endfor %}
+            </select>
 
-    <form method="post">
-        <!-- Kategori -->
-        <label for="category">Kategori:</label>
-        <select name="category" id="category" onchange="updateUnits()" data-units='{{ units | tojson }}'>
-            {% for cat in units %}
-                <option value="{{ cat }}" {% if cat == selected_category %}selected{% endif %}>{{ cat }}</option>
-            {% endfor %}
-        </select>
+            <label for="from_unit">Fra:</label>
+            <select name="from_unit" id="from_unit">
+                {% for u in units[selected_category] %}
+                    <option value="{{ u }}" {% if u == from_unit %}selected{% endif %}>{{ u }}</option>
+                {% endfor %}
+            </select>
 
-        <!-- Fra -->
-        <label for="from_unit">Fra:</label>
-        <select name="from_unit" id="from_unit">
-            {% for u in units[selected_category] %}
-                <option value="{{ u }}" {% if u == from_unit %}selected{% endif %}>{{ u }}</option>
-            {% endfor %}
-        </select>
+            <label for="to_unit">Til:</label>
+            <select name="to_unit" id="to_unit">
+                {% for u in units[selected_category] %}
+                    <option value="{{ u }}" {% if u == to_unit %}selected{% endif %}>{{ u }}</option>
+                {% endfor %}
+            </select>
 
-        <!-- Til -->
-        <label for="to_unit">Til:</label>
-        <select name="to_unit" id="to_unit">
-            {% for u in units[selected_category] %}
-                <option value="{{ u }}" {% if u == to_unit %}selected{% endif %}>{{ u }}</option>
-            {% endfor %}
-        </select>
+            <label for="value">Verdi:</label>
+            <input type="number" step="any" name="value" id="value" value="{{ value }}" required>
 
-        <!-- Verdi -->
-        <label for="value">Verdi:</label>
-        <input type="number" step="any" name="value" id="value" value="{{ value }}" required>
+            <button type="submit">Konverter</button>
+        </form>
 
-        <button type="submit">Konverter</button>
-    </form>
-
-    {% if result %}
-        <div class="result {% if '⚠️' in result %}error{% endif %}">
-            <strong>Resultat:</strong> {{ result }}
-        </div>
-    {% endif %}
+        {% if result %}
+            <div class="result {% if '⚠️' in result %}error{% endif %}">
+                <strong>Resultat:</strong> {{ result }}
+            </div>
+        {% endif %}
+    </div>
 
     <script>
         const categorySelect = document.getElementById("category");
