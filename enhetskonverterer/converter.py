@@ -23,7 +23,8 @@ def convert_units(value, from_unit, to_unit, category):
             "pund": 2.20462,
             "ounce": 35.274,
             "tonn": 0.001,
-            "stone": 0.157473    # ← ny (1 stone ≈ 6.35029 kg)
+            "stone": 0.157473     
+            
         }
     elif category == "Volum":
         factors = {
@@ -31,7 +32,9 @@ def convert_units(value, from_unit, to_unit, category):
             "milliliter": 1000,
             "gallon": 0.264172,
             "pint": 2.11338,
-            "kubikkmeter": 0.001
+            "kubikkmeter": 0.001,
+            "US cup": 4.22675,      #← ny (1 US Cup ≈ 0.23695 liter) 
+            "fl oz": 33.81402       #← ny (1 fl oz ≈ 0.02957 liter)
         }
     elif category == "Tid":
         factors = {
