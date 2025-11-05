@@ -5,9 +5,9 @@ app = Flask(__name__)
 
 # Enhetskategorier og tilgjengelige enheter
 units = {
-    "Lengde": ["meter", "centimeter", "kilometer", "inch", "foot", "mile", "yard"],  
+    "Lengde": ["meter", "centimeter", "millimeter", "kilometer", "inch", "foot", "mile", "yard"],  
     "Vekt": ["kilogram", "gram", "pund", "ounce", "tonn", "stone"],                
-    "Volum": ["liter", "milliliter", "gallon", "pint", "kubikkmeter", "US cup", "fl oz"],   # ← ny
+    "Volum": ["liter", "desiliter", "centiliter", "milliliter", "gallon", "pint", "kubikkmeter", "US cup", "fl oz"],   # ← ny
     "Tid": ["sekund", "minutt", "time", "dag"],
     "Temperatur": ["Celsius", "Fahrenheit", "Kelvin"],
     "Valuta": ["USD", "EUR", "GBP", "NOK", "JPY", "AUD"]

@@ -10,11 +10,12 @@ def convert_units(value, from_unit, to_unit, category):
         factors = {
             "meter": 1,
             "centimeter": 100,
+            "millimeter": 1000,  #ny
             "kilometer": 0.001,
             "inch": 39.3701,
             "foot": 3.28084,
             "mile": 0.000621371,
-            "yard": 1.09361     # ← ny
+            "yard": 1.09361     
         }
     elif category == "Vekt":
         factors = {
@@ -29,12 +30,14 @@ def convert_units(value, from_unit, to_unit, category):
     elif category == "Volum":
         factors = {
             "liter": 1,
+            "desiliter": 10,  #ny
+            "centiliter": 100,  #ny
             "milliliter": 1000,
             "gallon": 0.264172,
             "pint": 2.11338,
             "kubikkmeter": 0.001,
-            "US cup": 4.22675,      #← ny (1 US Cup ≈ 0.23695 liter) 
-            "fl oz": 33.81402       #← ny (1 fl oz ≈ 0.02957 liter)
+            "US cup": 4.22675,      
+            "fl oz": 33.81402       
         }
     elif category == "Tid":
         factors = {
